@@ -27,6 +27,7 @@ call plug#begin(expand('~/.vim/plugged'))
 "*****************************************************************************
 "" Plug install packages
 "*****************************************************************************
+Plug 'nathanaelkane/vim-indent-guides'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tpope/vim-commentary'
@@ -48,7 +49,7 @@ Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
 Plug 'ggvgc/vim-fuzzysearch'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'easymotion/vim-easymotion'
-Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
+Plug 'valloric/youcompleteme'
 
 
 " Start autocompletion after 4 chars
@@ -85,8 +86,13 @@ Plug 'xolox/vim-session'
 
 "" Snippets
 Plug 'ervandew/supertab'
-Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'heavenshell/vim-jsdoc'
+
+let g:jsdoc_allow_input_prompt = 1
+let g:jsdoc_input_description = 1
+let g:jsdoc_enable_es6 = 1
+let g:jsdoc_allow_shorthand = 1
 
 "" Color
 Plug 'tomasr/molokai'
@@ -104,7 +110,7 @@ Plug 'prettier/vim-prettier', {
 let g:prettier#autoformat = 0
 autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
 
-let g:ale_javascript_prettier_options = '--no-bracket-spacing --single-quote --vue-indent-script-and-style=true --print-width 100'
+let g:ale_javascript_prettier_options = '--no-bracket-spacing --single-quote=true --vue-indent-script-and-style=true --print-width 120'
 
 " html
 "" HTML Bundle
@@ -124,6 +130,7 @@ Plug 'isRuslan/vim-es6'
 " php
 "" PHP Bundle
 Plug 'arnaud-lb/vim-php-namespace'
+Plug 'vim-scripts/smarty-syntax'
 
 
 " typescript
@@ -191,6 +198,7 @@ set fileencoding=utf-8
 set fileencodings=utf-8
 set ttyfast
 
+
 "" Fix backspace indent
 set backspace=indent,eol,start
 
@@ -201,7 +209,7 @@ set shiftwidth=2
 set expandtab
 
 "" Map leader to ,
-"" let mapleader=','
+let mapleader=','
 
 "" Enable hidden buffers
 set hidden
@@ -238,16 +246,15 @@ colorscheme solarized
 
 let no_buffers_menu=1
 
+"set termguicolors
+"let &t_8f = \<Esc>[38;2;%lu;%lu;%lum"
+"let &t_8b = \<Esc>[48;2;%lu;%lu;%lum"
+
 set mousemodel=popup
 set t_Co=256
 set guioptions=egmrti
-set gfn=Monospace\ 10
 
 if has("gui_running")
-  if has("gui_mac") || has("gui_macvim")
-    set guifont=Menlo:h12
-    set transparency=7
-  endif
 else
   let g:CSApprox_loaded = 1
 
@@ -303,6 +310,7 @@ endif
 " Ctrlp
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|vendor'
 
 " Buffers
 set wildchar=<Tab> wildmenu wildmode=full
@@ -342,6 +350,7 @@ let g:NERDTreeShowBookmarks=1
 let g:nerdtree_tabs_focus_on_files=1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 let g:NERDTreeWinSize = 50
+let g:NERDTreeIgnore = ['^node_modules$']
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 nnoremap <silent> <F3> :NERDTreeToggle<CR>
@@ -404,6 +413,8 @@ augroup vimrc-sync-fromstart
   autocmd BufEnter * :syntax sync maxlines=200
 augroup END
 
+au BufRead,BufNewFile *.tpl set filetype=smarty
+
 "" Remember cursor position
 augroup vimrc-remember-cursor-position
   autocmd!
@@ -449,6 +460,8 @@ noremap <Leader>gs :Gstatus<CR>
 noremap <Leader>gb :Gblame<CR>
 noremap <Leader>gd :Gvdiff<CR>
 noremap <Leader>gr :Gremove<CR>
+map <M-s> :w<kEnter>
+imap <M-s> <Esc>:w<kEnter>
 
 " session management
 nnoremap <leader>so :OpenSession<Space>
@@ -630,4 +643,5 @@ else
   let g:airline_symbols.readonly = ''
   let g:airline_symbols.linenr = ''
 endif
+
 
