@@ -31,7 +31,6 @@ Plug 'nathanaelkane/vim-indent-guides'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -41,32 +40,24 @@ Plug 'vim-scripts/CSApprox'
 Plug 'Raimondi/delimitMate'
 Plug 'majutsushi/tagbar'
 Plug 'w0rp/ale'
-Plug 'altercation/vim-colors-solarized'
+Plug 'tomasiser/vim-code-dark'
 Plug 'Yggdroot/indentLine'
 Plug 'avelino/vim-bootstrap-updater'
 Plug 'sheerun/vim-polyglot'
-Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
+Plug 'honza/vim-snippets'
 Plug 'ggvgc/vim-fuzzysearch'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'easymotion/vim-easymotion'
-Plug 'valloric/youcompleteme'
-
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'TovarishFin/vim-solidity'
 
 " Start autocompletion after 4 chars
 let g:ycm_min_num_of_chars_for_completion = 1
 let g:ycm_min_num_identifier_candidate_chars = 1
-let g:ycm_enable_diagnostic_highlighting = 0
-" " Don't show YCM's preview window [ I find it really annoying ]
-set completeopt-=preview
+let g:ycm_enable_diagnostic_highlighting = 1
 let g:ycm_add_preview_to_completeopt = 0
 let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-let g:SuperTabDefaultCompletionType = '<C-n>'
-
-" better key bindings for UltiSnipsExpandTrigger
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 if isdirectory('/usr/local/opt/fzf')
   Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
@@ -85,7 +76,6 @@ Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
 "" Snippets
-Plug 'ervandew/supertab'
 Plug 'honza/vim-snippets'
 Plug 'heavenshell/vim-jsdoc'
 
@@ -93,6 +83,63 @@ let g:jsdoc_allow_input_prompt = 1
 let g:jsdoc_input_description = 1
 let g:jsdoc_enable_es6 = 1
 let g:jsdoc_allow_shorthand = 1
+
+"" Completion
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+"" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Run the Code Lens action on the current line.
+nmap <leader>cl  <Plug>(coc-codelens-action)
 
 "" Color
 Plug 'tomasr/molokai'
@@ -104,10 +151,10 @@ Plug 'tomasr/molokai'
 Plug 'tpope/vim-surround'
 Plug 'eslint/eslint'
 Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
+  \ 'do': 'npm install',
   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html', 'twig', 'smarty'] }
 
-let g:prettier#autoformat = 0
+let g:prettier#autoformat = 1
 autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html Prettier
 
 let g:ale_javascript_prettier_options = '--no-bracket-spacing --single-quote=true --vue-indent-script-and-style=true --print-width 120'
@@ -122,32 +169,25 @@ Plug 'mattn/emmet-vim'
 " javascript
 "" Javascript Bundle
 Plug 'jelera/vim-javascript-syntax'
-Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
+Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'isRuslan/vim-es6'
-
 
 " php
 "" PHP Bundle
 Plug 'arnaud-lb/vim-php-namespace'
 Plug 'vim-scripts/smarty-syntax'
 
-
 " typescript
 Plug 'leafgarland/typescript-vim'
 Plug 'HerringtonDarkholme/yats.vim'
 
-
 " vuejs
-Plug 'posva/vim-vue'
-Plug 'leafOfTree/vim-vue-plugin'
-
-
+Plug 'yaegassy/coc-volar', {'do': 'yarn install --frozen-lockfile'}
 
 " Nerdtree
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-
 
 map <C-n> :NERDTreeToggle<CR>
 
@@ -209,7 +249,7 @@ set shiftwidth=2
 set expandtab
 
 "" Map leader to ,
-let mapleader=','
+let mapleader='\'
 
 "" Enable hidden buffers
 set hidden
@@ -242,7 +282,6 @@ set ruler
 set relativenumber
 set background=dark
 "let g:solarized_termcolors=256
-colorscheme solarized
 
 let no_buffers_menu=1
 
@@ -303,9 +342,11 @@ set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
-if exists("*fugitive#statusline")
-  set statusline+=%{fugitive#statusline()}
-endif
+function! GitStatus()
+  let [a,m,r] = GitGutterGetHunkSummary()
+  return printf('+%d ~%d -%d', a, m, r)
+endfunction
+set statusline+=%{GitStatus()}
 
 " Ctrlp
 let g:ctrlp_map = '<c-p>'
@@ -316,7 +357,7 @@ let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|vendor'
 set wildchar=<Tab> wildmenu wildmode=full
 
 " vim-airline
-let g:airline_theme = 'powerlineish'
+let g:airline_theme = 'codedark'
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
@@ -327,6 +368,7 @@ let g:ale_fixers = {
       \}
 let g:ale_fix_on_save = 1
 
+colorscheme codedark
 "*****************************************************************************
 "" Abbreviations
 "*****************************************************************************
@@ -505,11 +547,6 @@ nnoremap <silent> <leader>e :FZF -m<CR>
 nmap <leader>y :History:<CR>
 
 " snippets
-" let g:UltiSnipsExpandTrigger="<tab>"
-" let g:UltiSnipsJumpForwardTrigger="<tab>"
-" let g:UltiSnipsJumpBackwardTrigger="<c-b>"
-" let g:UltiSnipsEditSplit="vertical"
-noremap <Leader>v :<C-u>vsplit<CR>
 
 " ale
 let g:ale_linters = {}
@@ -591,9 +628,21 @@ let g:yats_host_keyword = 1
 
 " vuejs
 " vim vue
-let g:vue_disable_pre_processors=1
-" vim vue plugin
-let g:vim_vue_plugin_load_full_syntax = 1
+let g:vue_pre_processors = 'detect_on_enter'
+
+let g:vim_vue_plugin_config = {
+      \'syntax': {
+      \   'template': ['html'],
+      \   'script': ['typescript', 'javascript'],
+      \   'style': ['css', 'scss'],
+      \},
+      \'full_syntax': [],
+      \'initial_indent': ['script', 'tag'],
+      \'attribute': 0,
+      \'keyword': 0,
+      \'foldexpr': 0,
+      \'debug': 0,
+      \}
 
 
 "*****************************************************************************
